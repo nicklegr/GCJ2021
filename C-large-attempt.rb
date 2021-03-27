@@ -1,0 +1,170 @@
+require 'pp'
+
+def ppd(*arg)
+  if $DEBUG
+    arg.each do |e|
+      PP.pp(e, STDERR)
+    end
+  end
+end
+
+def putsd(*arg)
+  if $DEBUG
+    STDERR.puts(*arg)
+  end
+end
+
+def parrd(arr)
+  putsd arr.join(" ")
+end
+
+def ri
+  readline.to_i
+end
+
+def ris
+  readline.split.map do |e| e.to_i end
+end
+
+def rs
+  readline.chomp
+end
+
+def rss
+  readline.chomp.split
+end
+
+def rf
+  readline.to_f
+end
+
+def rfs
+  readline.split.map do |e| e.to_f end
+end
+
+def rws(count)
+  words = []
+  count.times do
+    words << readline.chomp
+  end
+  words
+end
+
+def puts_sync(str)
+  puts str
+  STDOUT.flush
+end
+
+def array_2d(r, c)
+  ret = []
+  r.times do
+    ret << [0] * c
+  end
+  ret
+end
+
+class Integer
+  def popcount32
+    bits = self
+    bits = (bits & 0x55555555) + (bits >>  1 & 0x55555555)
+    bits = (bits & 0x33333333) + (bits >>  2 & 0x33333333)
+    bits = (bits & 0x0f0f0f0f) + (bits >>  4 & 0x0f0f0f0f)
+    bits = (bits & 0x00ff00ff) + (bits >>  8 & 0x00ff00ff)
+    return (bits & 0x0000ffff) + (bits >> 16 & 0x0000ffff)
+  end
+
+  def combination(k)
+    self.factorial/(k.factorial*(self-k).factorial)
+  end
+
+  def permutation(k)
+    self.factorial/(self-k).factorial
+  end
+
+  def factorial
+    return 1 if self == 0
+    (1..self).inject(:*)
+  end
+end
+
+# test
+# arr = "612345".chars
+# n = arr.size
+# cost = 0
+# for i in 0...n-1
+#   j = i
+#   min_v = arr[j]
+#   for k in i...n
+#     if arr[k] < min_v
+#       min_v = arr[k]
+#       j = k
+#     end
+#   end
+#   arr[i..j] = arr[i..j].reverse
+#   cost += arr[i..j].size
+# end
+# puts cost
+# exit
+
+# main
+t_start = Time.now
+
+cases = readline().to_i
+
+(1 .. cases).each do |case_index|
+  n, c = ris
+
+  base = (1..n).to_a
+
+  ans = nil
+  tbl = Hash.new {|h, k| h[k] = []}
+  base.permutation do |p|
+    # シミュレーション
+    arr = p.dup
+    cost = 0
+    for i in 0...n-1
+      j = i
+      min_v = arr[j]
+      for k in i...n
+        if arr[k] < min_v
+          min_v = arr[k]
+          j = k
+        end
+      end
+      arr[i..j] = arr[i..j].reverse
+      cost += arr[i..j].size
+    end
+
+    tbl[cost] << p
+  end
+
+  puts "Case ##{case_index}: possible cost: #{tbl.keys.sort.join(" ")}"
+
+  tbl.keys.sort.each do |k|
+    # puts "#{k}:"
+    # tbl[k].each do |arr|
+    #   puts "  #{arr.join("")}"
+    # end
+
+    if true # tbl[k].size == 1 || k <= n + 2
+      puts "#{k}: size #{tbl[k].size}"
+      tbl[k].each do |e|
+        puts "#{e.join}"
+      end
+    else
+      puts "#{k}: size #{tbl[k].size}"
+    end
+  end
+
+  # progress
+  trigger = 
+    if cases >= 10
+      case_index % (cases / 10) == 0
+    else
+      true
+    end
+
+  if trigger
+    STDERR.puts("case #{case_index} / #{cases}, time: #{Time.now - t_start} s")
+  end
+end
