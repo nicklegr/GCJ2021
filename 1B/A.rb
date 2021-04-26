@@ -116,11 +116,13 @@ def solve(a,b,c)
 # exit
         cand.sort!
 
-        d0 = angles[0] - cand[0]
-        d1 = angles[1] - cand[1]
-        d2 = angles[2] - cand[2]
+        rot0 = angles[0] - cand[0]
+        rot1 = angles[1] - cand[1]
+        rot2 = angles[2] - cand[2]
 
-        if d0 == d1 && d1 == d2
+        if cand[0]+rot0 == angles[0] && cand[1]+rot0 == angles[1] && cand[2]+rot0 == angles[2] ||
+           cand[0]+rot1 == angles[0] && cand[1]+rot1 == angles[1] && cand[2]+rot1 == angles[2] ||
+           cand[0]+rot2 == angles[0] && cand[1]+rot2 == angles[1] && cand[2]+rot2 == angles[2]
           return "#{h} #{m} #{s} #{0}"
         end
       end
