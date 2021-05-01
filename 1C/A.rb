@@ -101,7 +101,7 @@ cases = readline().to_i
   wins = []
 
   wins << ps.first - 1
-ppd ps.first
+ppd ps.first - 1
 
   wins << k - ps.last
 ppd k - ps.last
@@ -109,12 +109,26 @@ ppd k - ps.last
   ps.each_cons(2) do |e|
     a, b = e
     wins << (a + b)/2 - a
-
-ppd "#{a}, #{b} -> #{(a + b)/2 - a}"
+ppd "#{a}, #{b} -> #{wins.last}"
   end
 
   wins.sort!.reverse!
   win_count = wins[0] + wins[1]
+
+  wins2 = []
+  ps.each_cons(2) do |e|
+    a, b = e
+    wins2 << ((b-1) - (a+1) + 1)
+ppd "#{a}, #{b} -> #{wins2.last}"
+  end
+
+  if !wins2.empty?
+    m = wins2.max
+    if win_count < m
+      win_count = m
+    end
+  end
+
   prob = win_count.to_f / k.to_f
 
   puts "Case ##{case_index}: #{prob}"
